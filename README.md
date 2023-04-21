@@ -36,10 +36,10 @@ python main.py -m 0 -dp database
 ```
 ## TODO
 
-- [] Enable inferencing on both live webcam and read from video
-- [] Linux compatible version
-- [] Choose and register from many faces which exists in one frame
-- [] Optimize program work's flow 
+- [ ] Enable inferencing on both live webcam and read from video
+- [ ] Linux compatible version
+- [ ] Choose and register from many faces which exists in one frame
+- [ ] Optimize program work's flow 
 - ...
 
 ## References
