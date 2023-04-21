@@ -8,7 +8,7 @@ A Python implementation of Retina + Arcface for detects faces and performs facia
 - [Install CUDA and CUDNN](https://medium.com/geekculture/install-cuda-and-cudnn-on-windows-linux-52d1501a8805) (use VPN if your ISP block Medium)
 - Get source code and install python dependencies (using virtual environment is recommend)
 ```sh
-git clone https://github.com/maybehieu/pytorch-face-recognition
+git clone https://github.com/maybehieu/PytorchFaceRecognition.git
 pip install -r requirements.txt
 ```
 - Database structure:
