@@ -1,0 +1,7 @@
+widerface/**
+widerface/
+database/**/*.jpg
+database/**/*.png
+weights/**/*.tar
+weights/**/*.pth
+weights/**/*.xml
