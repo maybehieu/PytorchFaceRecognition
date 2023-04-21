@@ -34,6 +34,14 @@ python main.py -m 0 -dp database
 # -m: program mode - 0: register, 1:recognition
 # -dp: database path - default: database
 ```
+## TODO
+
+- [] Enable inferencing on both live webcam and read from video
+- [] Linux compatible version
+- [] Choose and register from many faces which exists in one frame
+- [] Optimize program work's flow 
+- ...
+
 ## References
 - [pytorch-retinaface](https://github.com/biubug6/Pytorch_Retinaface)
 - [arcface-torch](https://github.com/deepinsight/insightface/tree/master/recognition/arcface_torch)
