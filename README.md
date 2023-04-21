@@ -26,6 +26,8 @@ pip install -r requirements.txt
 - In development...
 
 ## Inference
+- Acquire pretrained weights (provided by [pytorch-retinaface](https://github.com/biubug6/Pytorch_Retinaface), [arcface-torch](https://github.com/deepinsight/insightface/tree/master/recognition/arcface_torch)) and extract to ```weights``` folder: [Dropbox](https://www.dropbox.com/s/ipqfq24pj28ie5h/weights.rar?dl=0)
+
 - Run the program
 ```sh
 python main.py -m 0 -dp database
