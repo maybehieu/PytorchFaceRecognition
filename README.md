@@ -43,8 +43,8 @@ python main.py -m 0 -dp database
 - ...
 
 ## References
-- [pytorch-retinaface](https://github.com/biubug6/Pytorch_Retinaface)
-- [arcface-torch](https://github.com/deepinsight/insightface/tree/master/recognition/arcface_torch)
+- [pytorch-retinaface](https://github.com/biubug6/Pytorch_Retinaface) - RetinaFace model architecture and pre-trained weights
+- [arcface-torch](https://github.com/deepinsight/insightface/tree/master/recognition/arcface_torch) - Arcface model architecture and pre-trained weights
 
 ## Citations
 
