@@ -199,9 +199,13 @@ if __name__ == '__main__':
             # identity_folder_path = input('Identity folder path(with forward "/" slash): ')
             database_path = args['database']
             identity_name = input('Input identity\'s name: ')
+            identity_path = os.path.normpath(os.path.join(database_path + '/' + identity_name))
+            # check if identity folder exist, create if not
+            if not os.path.exists(identity_path):
+                os.mkdir(identity_path)
             # get current number of images belong to identity (if exist)
-            face_count = len(glob.glob(os.path.join(database_path, '/*.png')) + \
-            glob.glob(os.path.join(database_path, '/*.jpg')))
+            face_count = len(glob.glob(os.path.join(identity_path, '/*.png')) + \
+            glob.glob(os.path.join(identity_path, '/*.jpg')))
             register_count = 0
             features = []
             # loop
