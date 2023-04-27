@@ -202,14 +202,22 @@ class RetinaDetector():
     
 class CascadeDetector():
     def __init__(self) -> None:
-        self.face_cascade = cv.CascadeClassifier(
-            cv.data.haarcascades + 'haarcascade_frontalface_default.xml'
-        )
+        self.face_cascade = cv.CascadeClassifier('weights\haarcascade_profileface.xml')
         
     def detect(self, frame=cv.imread('', cv.IMREAD_COLOR)):
-        frame = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
-        faces = self.face_cascade.detectMultiScale(frame, 1.3, 4)
-        return faces
+        img = cv.cvtColor(frame.copy(), cv.COLOR_BGR2GRAY)
+        faces = self.face_cascade.detectMultiScale(img, 1.3, 4)
+        return faces, []
 
 if __name__ == '__main__':
+    # detector = CascadeDetector()
+    # cam = cv.VideoCapture(0)
+    # while True:
+    #     ret, frame = cam.read()
+    #     if not ret:break
+    #     bboxs = detector.detect(frame)
+    #     for b in bboxs:
+    #         cv.rectangle(frame, (b[0], b[1]), (b[0] + b[2], b[1] + b[3]), (0, 255, 255), 1)
+    #     cv.imshow('frame', frame)
+    #     cv.waitKey(0)
     pass

@@ -1,12 +1,19 @@
 import torch, os, glob, numpy as np, cv2, argparse
-from core.detection import RetinaDetector
+from core.detection import RetinaDetector, CascadeDetector
 from core.recognition import ArcRecognizer
 from numpy.linalg import norm
 @torch.no_grad()
 class Handler():
-    def __init__(self, database_path) -> None:
+    def __init__(self, database_path, backend) -> None:
         self.arcface = ArcRecognizer()
-        self.retina = RetinaDetector()
+        self.detector = None
+        self.backend = backend
+        if backend == 'retina':
+            self.detector = RetinaDetector()
+        elif backend == 'opencv':
+            self.detector = CascadeDetector()
+        # self.retina = RetinaDetector()
+        # self.haar_cascade = CascadeDetector()
         self.mean_face_database = []
         self.face_database = []
         self.image_size = (112, 112) # for arcface
@@ -37,7 +44,7 @@ class Handler():
                 glob.glob(os.path.join(parent_folder_path, identity_folder) + '/*.jpg'):
                 
                 img = cv2.imread(file, cv2.IMREAD_COLOR)
-                faces, landms = self.retina.detect(img)
+                faces, landms = self.detector.detect(img)
                 # fool proof for many faces detected in one image (registration will denied this)
                 for idx in range(len(faces)):
                     # extract face bounding box
@@ -45,9 +52,13 @@ class Handler():
                     # crop face from image with face bbox
                     face_frame = img[y1:y2, x1:x2]
                     # resize face to desired size
+                    if face_frame.size == 0: continue
                     face_frame = cv2.resize(face_frame, self.image_size, interpolation=cv2.INTER_AREA)
                     # process landmark points from 'scaled' to actual 'coordinates'
-                    landmk = [landm * self.image_size[0] for landm in landms[idx]]
+                    if self.backend == 'retina':
+                        landmk = [landm * self.image_size[0] for landm in landms[idx]]
+                    elif self.backend == 'opencv':
+                        landmk = []
                     # get image blob
                     blob = self.arcface.get_image(face_frame, landmk)
                     blobs.append(blob)
@@ -67,7 +78,7 @@ class Handler():
                 # save all feature vectors to (single) face database
                 self.face_database.append((identity_folder, feat))
         print(self.mean_face_database)
-        print(self.face_database)
+        # print(self.face_database)
         self.database_state = True
     
     
@@ -77,7 +88,7 @@ class Handler():
     """
     def recognize(self, img=cv2.imread('', cv2.IMREAD_COLOR)):
         # detect face from image
-        faces, landms = self.retina.detect(img)
+        faces, landms = self.detector.detect(img)
         # iterate through each image detected in frame
         for idx in range(len(faces)):
             # getting face bounding box coordinates
@@ -85,9 +96,13 @@ class Handler():
             # cut face from image
             face_frame = img[y1:y2, x1:x2]
             # resize image to desired size
+            if face_frame.size == 0: continue
             face_frame = cv2.resize(face_frame, (112, 112), interpolation=cv2.INTER_AREA)
             # get 'this' face landmarks
-            landmk = landms[idx]
+            if self.backend == 'retina':
+                landmk = landms[idx]
+            elif self.backend == 'opencv':
+                landmk = []
             # get input blob
             blob = self.arcface.get_image(face_frame, landmk)
             # get face feature
@@ -127,9 +142,9 @@ class Handler():
                 # print()
             
             # draw processed result
-            cv2.rectangle(img, (x1, y1), (x2, y2), (0,0,255), 2)
-            cv2.putText(img, 'Name: ' + match_name, (x1, y1 - 10), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,0,0))
-            cv2.putText(img, 'Confidence: ' + str(match_score), (x1, y1 - 20), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0,0,0))
+            cv2.rectangle(img, (x1, y1), (x2, y2), (0,255,255), 2)
+            cv2.putText(img, 'Name: ' + match_name, (x1, y1 - 10), cv2.FONT_HERSHEY_COMPLEX, .4, (255,255,255), 1)
+            cv2.putText(img, 'Confidence: ' + str(match_score), (x1, y1 - 25), cv2.FONT_HERSHEY_COMPLEX, .4, (255,255,255), 1)
         return img
         
 
@@ -144,7 +159,7 @@ class Handler():
 
     def register_identity(self, img=cv2.imread('', cv2.IMREAD_COLOR), identity=''):
         # detect face from image
-        faces, landms = self.retina.detect(img)
+        faces, landms = self.detector.detect(img)
         # initialize parameters
         msg = ''
         # check if only one face detected in frame
@@ -183,10 +198,11 @@ if __name__ == '__main__':
     parser.add_argument('--mode', '-m', type=int, default=0, help='0 - register new face into system, 1 - face recognition')
     parser.add_argument('--imgs', '-i', type=str, default='', help='if empty, auto search for webcam, else - a path to a folder contains images of new face')
     parser.add_argument('--database', '-dp', type=str, default='database', help='Path to parent \'database\' path, contain sub-folders in which contain face images')
+    parser.add_argument('--backend', '-dbe', type=str, default='retina', help='Backend for face detection')
     args = vars(parser.parse_args())
     
     # # initialize main handler
-    handler = Handler(args['database'])
+    handler = Handler(args['database'], args['backend'])
 
     # # initialize program
     STATE = True
