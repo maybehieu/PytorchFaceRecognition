@@ -151,7 +151,13 @@ class RetinaDetector():
             if bbox[4] < self.vis_thresh:
                 continue
             bbox = list(map(int, bbox))
-            faces.append([bbox[0]-20, bbox[1]-20, bbox[2]+20, bbox[3]+20, bbox[4]])  # x1 y1 x2 y2 confidence
+
+            # getting bbox with padding
+            x1 = bbox[0]-20 if bbox[0]-20 >= 0 else bbox[0]
+            y1 = bbox[1]-20 if bbox[1]-20 >= 0 else bbox[1]
+            x2 = bbox[2]+20 if bbox[2]+20 >= 0 else bbox[2]
+            y2 = bbox[3]+20 if bbox[3]+20 >= 0 else bbox[3]
+            faces.append([x1, y1, x2, y2, bbox[4]])  # x1 y1 x2 y2 confidence
 
             landm = landms[idx]
             i_width = bbox[2] - bbox[0]
